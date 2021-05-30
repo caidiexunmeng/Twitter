@@ -53,7 +53,7 @@ class FriendshipViewSet(viewsets.GenericViewSet):
         }, status=status.HTTP_201_CREATED)
 
     @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated])
-    def follow(self, request, pk):
+    def unfollow(self, request, pk):
         if request.user.id == int(pk):
             return Response({
                 'success': False,
