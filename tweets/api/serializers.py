@@ -19,5 +19,5 @@ class TweetCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         content = validated_data['content']
-        tweet = Tweet.objects.create(user=user, content = content)
+        tweet = Tweet.objects.create(user=user, content=content)
         return tweet
