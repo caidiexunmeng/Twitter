@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from utils.decorators import required_params
 from comments.models import Comment
 from comments.api.permissions import IsObjectOwner
 from comments.api.serializers import (
@@ -15,6 +16,7 @@ class CommentViewSet(viewsets.GenericViewSet):
 
     serializer_class = CommentSerializerForCreate
     queryset = Comment.objects.all()
+    filterset_fields = ('tweet_id',)
 
     def get_permissions(self):
         if self.action == 'create':
@@ -22,6 +24,16 @@ class CommentViewSet(viewsets.GenericViewSet):
         if self.action in ['destroy', 'update']:
             return [IsAuthenticated(), IsObjectOwner()]
         return [AllowAny()]
+
+    @required_params(params=['tweet_id'])
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        comments = self.filter_queryset(queryset).order_by('created_at')
+        serializer = CommentSerializer(comments, many=True)
+        return Response(
+            {'comments': serializer.data},
+            status=status.HTTP_200_OK,
+        )
 
     def create(self, request, *args, **kwargs):
         data = {
