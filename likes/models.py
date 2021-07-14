@@ -8,7 +8,7 @@ class Like(models.Model):
     object_id = models.PositiveIntegerField()
     content_type = models.ForeignKey(
         ContentType,
-        on_delete=models.SET_NULL(),
+        on_delete=models.SET_NULL,
         null=True,
     )
     content_object = GenericForeignKey('content_type', 'object_id')
